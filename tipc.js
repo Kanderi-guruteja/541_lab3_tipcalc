@@ -1,48 +1,30 @@
-document.addEventListener("DOMContentLoaded", (event)=>{
-    // User's input
-    var bill = document.getElementById("bill");
-    var tip = document.getElementById("tip");
+document.addEventListener("DOMContentLoaded", function () {
+    const billTotalInput = document.getElementById("bill-total");
+    const tipInput = document.getElementById("tip");
+    const tipPercentageDisplay = document.getElementById("tip-percentage-display");
+    const tipAmountInput = document.getElementById("tip-amount");
+    const totalWithTipInput = document.getElementById("total-with-tip");
 
-    // Error management
-    var error = document.createElement('p');
-    error.id = 'error';
-    let errorMsg = document.createTextNode('Please enter a 2 decimal number.\nExample: 12.34');
-    error.appendChild(errorMsg);
+    // Add an input event listener to the Bill Total input field
+    billTotalInput.addEventListener("input", calculateTip);
 
-    // Initial values
-    var billVal = 0;
-    var tipVal = 15;
-
-    // Event listener
-    bill.addEventListener("input", calculator);
-    tip.addEventListener("input", calculator);
-
-    function calculator(){
-        if (isNaN(Number(bill.value))){
-            if(document.getElementById('error') === null){
-                document.getElementsByClassName('calculator')[0].appendChild(error);
-            }
-        } else if (Number(bill.value).toFixed(2) != Number(bill.value)) {
-            document.getElementsByClassName('calculator')[0].appendChild(error);
+    // Function to calculate the tip and update the results
+    function calculateTip() {
+        const billTotal = parseFloat(billTotalInput.value);
+        
+        if (isNaN(billTotal)) {
+            billTotalInput.setCustomValidity("Please enter a valid number");
         } else {
-            if (error !== null) error.remove();
-
-            billVal = Number(bill.value).toFixed(2) || 0;
-            tipVal = Number(tip.value) || 0;
-
-            // Setting the Tip Percentage field
-            var tipPercentageInput = document.getElementById("tip-percentage");
-            tipPercentageInput.value = tipVal;
-
-            // Setting the Tip Amount field
-            var tipAmount = document.getElementById("tip-amount");
-            var tipAmountValue = tipVal / 100 * billVal;
-            tipAmount.value = tipAmountValue.toFixed(2);
-
-            // Setting the Total Bill with Tip field
-            var total = document.getElementById("total");
-            var totalValue = Number(billVal) + Number(tipAmountValue);
-            total.value = totalValue.toFixed(2);
+            billTotalInput.setCustomValidity(""); // Clear any previous error
+            const tipPercentage = tipInput.value;
+            const tipAmount = (billTotal * tipPercentage) / 100;
+            const totalWithTip = billTotal + tipAmount;
+            tipPercentageDisplay.textContent = tipPercentage + "%";
+            tipAmountInput.value = tipAmount.toFixed(2);
+            totalWithTipInput.value = totalWithTip.toFixed(2);
         }
     }
+
+    // Initial calculation
+    calculateTip();
 });
